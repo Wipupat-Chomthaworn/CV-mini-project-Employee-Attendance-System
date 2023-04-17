@@ -28,7 +28,8 @@ for dir_name in os.listdir(known_faces_dir):
         # Append the name and face encodings to the known_face_names and known_face_encodings lists
         known_face_encodings.append(face_encodings)
         known_face_names.append(dir_name)
-
+print("face_encoding",known_face_encodings)
+print("face_encoding",known_face_names)
 # Turn on the camera
 video_capture = cv2.VideoCapture(0)
 
@@ -49,7 +50,7 @@ while True:
         name = 'Unknown'
         for i, encodings in enumerate(known_face_encodings):
             for encoding in encodings:
-                match = face_recognition.compare_faces([encoding], face_encoding)
+                match = face_recognition.compare_faces([encoding], face_encoding, tolerance=0.9)
                 if match[0]:
                     name = known_face_names[i]
                     break
