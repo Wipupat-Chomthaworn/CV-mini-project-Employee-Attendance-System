@@ -5,12 +5,10 @@ import os
 known_faces_dir = 'KnownFaces'
 known_face_names = []
 known_face_cascades = []
-print(os.getcwd() +'/CV-mini-project-Employee-Attendance-System-/' + known_faces_dir)
 for dir_name in os.listdir(known_faces_dir):
     dir_path = os.path.join(known_faces_dir, dir_name)
     if os.path.isdir(dir_path):
         cascade_path = 'haarcascade_frontalface_default.xml'
-        print('xml model',cascade_path)
         if os.path.isfile(cascade_path):
             cascade_classifier = cv2.CascadeClassifier(cascade_path)
             known_face_cascades.append(cascade_classifier)
@@ -44,23 +42,37 @@ while True:
             face_roi_color = frame[top:bottom, left:right]
             match = cascade.detectMultiScale(face_roi_gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
             if len(match) > 0:
-                name = known_face_names[i]
+                # Resize the face region to a standard size for comparison
+                face_roi_gray_resized = cv2.resize(face_roi_gray, (100, 100))
+
+                # Load the reference face image for this person and convert it to grayscale
+                reference_face_path = os.path.join(known_faces_dir, known_face_names[i], 'reference.jpg')
+                reference_face = cv2.imread(reference_face_path)
+                reference_face_gray = cv2.cvtColor(reference_face, cv2.COLOR_BGR2GRAY)
+
+                # Resize the reference face image to a standard size for comparison
+                reference_face_gray_resized = cv2.resize(reference_face_gray, (100, 100))
+
+                # Compute the Euclidean distance between the two faces
+                dist = cv2.norm(reference_face_gray_resized, face_roi_gray_resized, cv2.NORM_L2)
+
+                # Set a threshold for the distance
+                threshold = 50
+
+                # If the distance is below the threshold, the faces are a match
+                if dist < threshold:
+                    name = known_face_names[i]
                 break
-        
 
         # Draw a rectangle around the face
         cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
 
         # Write the name of the person on the rectangle
         cv2.putText(frame, name, (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+        # Display the resulting image
+        cv2.imshow('Video', frame)
 
-    # Display the resulting image
-    cv2.imshow('Video', frame)
-
-    # Exit the program if the 'q' key is pressed
+        # Exit the program if the 'q' key is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-# Release the video capture object and close all windows
-video_capture.release()
-cv2.destroyAllWindows()

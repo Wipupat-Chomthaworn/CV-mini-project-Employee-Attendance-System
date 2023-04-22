@@ -36,26 +36,37 @@ while True:
             faces.append((x, y, x+w, y+h))
 
     # Loop through each face found in the frame and check if it matches a known face
+    print('loop 1 finished')
     for (left, top, right, bottom) in faces:
         # Check if the face matches any known face
         name = 'Unknown'
+        best_match_score = 0
         for i, cascade in enumerate(known_face_cascades):
             face_roi_gray = gray_frame[top:bottom, left:right]
             face_roi_color = frame[top:bottom, left:right]
-            match = cascade.detectMultiScale(face_roi_gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+            match = cascade.detectMultiScale(face_roi_gray, scaleFactor=1.3, minNeighbors=5, minSize=(30, 30))
+            print('loop 2 finished')
+
             if len(match) > 0:
-                name = known_face_names[i]
-                break
-        
+                for (mx, my, mw, mh) in match:
+                    # Calculate the match score as the area of the intersection between the detected face and the known face
+                    match_area = (min(right, mx+mw) - max(left, mx)) * (min(bottom, my+mh) - max(top, my))
+                    match_score = match_area / ((right - left) * (bottom - top))
 
-        # Draw a rectangle around the face
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+                    # If this match score is better than the previous best score, update the name of the best match
+                    if match_score > best_match_score:
+                        best_match_score = match_score
+                        name = known_face_names[i]
 
-        # Write the name of the person on the rectangle
-        cv2.putText(frame, name, (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+            # Draw a rectangle around the face
+            cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
 
-    # Display the resulting image
-    cv2.imshow('Video', frame)
+            # Write the name of the person on the rectangle
+            cv2.putText(frame, name, (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+
+        # Display the resulting image
+        cv2.imshow('Video', frame)
+
 
     # Exit the program if the 'q' key is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
