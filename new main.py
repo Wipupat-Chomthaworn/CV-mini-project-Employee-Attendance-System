@@ -8,10 +8,10 @@ known_face_cascades = []
 for dir_name in os.listdir(known_faces_dir):
     dir_path = os.path.join(known_faces_dir, dir_name)
     if os.path.isdir(dir_path):
-        cascade_path = os.path.join(dir_path, 'haarcascade_frontalface_default.xml')
+        cascade_path = 'haarcascade_frontalface_default.xml'
         
         if os.path.isfile(cascade_path):
-            print('Warning',cascade_path)
+            print('xml model',cascade_path)
             cascade_classifier = cv2.CascadeClassifier(cascade_path)
             known_face_cascades.append(cascade_classifier)
             known_face_names.append(dir_name)
