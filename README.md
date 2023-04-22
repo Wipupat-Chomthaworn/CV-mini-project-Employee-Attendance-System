@@ -4,3 +4,4 @@ Document : https://docs.google.com/document/d/1QtliRUmhy0_oCdYNm3ltJ3nlskiRZgDtZ
 Presentation : <br>
 
 to use : pip install -r requirements.txt
+to save what is in pip install : pip freeze > requirements.txt
