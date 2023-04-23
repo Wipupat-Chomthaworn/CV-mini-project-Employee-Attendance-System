@@ -22,8 +22,7 @@ for dir_name in os.listdir(known_faces_dir):
 print("Known faces:", known_face_names)
 
 # Train the face recognizer
-face_recognizer = cv2.face_LBPHFaceRecognizer.create()
-
+face_recognizer = cv2.face.LBPHFaceRecognizer_create()
 faces = []
 labels = []
 for i, images in enumerate(known_face_images):
