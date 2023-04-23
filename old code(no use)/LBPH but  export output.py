@@ -33,8 +33,11 @@ face_recognizer.train(faces, np.array(labels))
 
 # Turn on the camera
 video_capture = cv2.VideoCapture(0)
-# Create a directory to save the exported images
 
+# Create a directory to save the exported images
+export_dir = 'ExportedFaces'
+if not os.path.exists(export_dir):
+    os.makedirs(export_dir)
 
 while True:
     # Capture a single frame from the camera
@@ -44,10 +47,8 @@ while True:
     gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Detect faces in the image
-    face_cascade = cv2.CascadeClassifier(
-        cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-    faces = face_cascade.detectMultiScale(
-        gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+    faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
     # Loop through each face found in the frame and check if it matches a known face
     for (x, y, w, h) in faces:
@@ -62,8 +63,13 @@ while True:
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
 
         # Write the name of the person on the rectangle
-        cv2.putText(frame, name, (x, y - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+        cv2.putText(frame, name, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+
+        # Export the face ROI as a separate image
+        roi_path = os.path.join(export_dir, f'{name}_{confidence:.0f}.jpg')
+       
+        cv2.imwrite(roi_path, face_roi_gray)
+        print("export roi", roi_path)
 
     # Display the resulting image
     cv2.imshow('Video', frame)
