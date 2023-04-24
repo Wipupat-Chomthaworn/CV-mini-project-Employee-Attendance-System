@@ -28,6 +28,7 @@ labels = []
 for i, images in enumerate(known_face_images):
     for img in images:
         faces.append(img)
+        print("img: ",img , "i", i)
         labels.append(i)
 face_recognizer.train(faces, np.array(labels))
 
