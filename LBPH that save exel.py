@@ -3,11 +3,13 @@ import os
 import numpy as np
 import pandas as pd
 from datetime import datetime
+import time
 
 # Load the known faces from the 'KnownFaces' folder
 known_faces_dir = 'KnownFaces'
 known_face_names = []
 known_face_images = []
+last_detected = {}
 for dir_name in os.listdir(known_faces_dir):
     dir_path = os.path.join(known_faces_dir, dir_name)
     if os.path.isdir(dir_path):
@@ -33,8 +35,12 @@ for i, images in enumerate(known_face_images):
         labels.append(i)
 face_recognizer.train(faces, np.array(labels))
 
+
+
 # Turn on the camera
 video_capture = cv2.VideoCapture(0)
+
+
 
 # Load the attendance Excel file or create a new one if it doesn't exist
 filename = 'Attendance.xlsx'
@@ -80,18 +86,26 @@ while True:
 
         # Add the name and current timestamp to the attendance dataframe
         if name != 'Unknown':
-            now = datetime.now()
-            date = now.strftime('%Y-%m-%d')
-            timestamp = now.strftime('%H:%M:%S')
-            row = {'Name': name, 'Date': date, 'Timestamp': timestamp}
-            df = pd.concat([df, pd.DataFrame(row, index=[0])], ignore_index=True)
-            print("Added row to attendance dataframe:", row)
+            now = time.time()
+        
+        # Check if the person was detected within the last 30 seconds
+            if name in last_detected and now - last_detected[name] < 30:
+                print("Skipping duplicate entry for", name)
+            else:
+                # Add the name and current timestamp to the attendance dataframe
+                last_detected[name] = now
+                date = datetime.now().strftime('%Y-%m-%d')
+                timestamp = datetime.now().strftime('%H:%M:%S')
+                row = {'Name': name, 'Date': date, 'Timestamp': timestamp}
+                df = pd.concat([df, pd.DataFrame(row, index=[0])], ignore_index=True)
+                print("Added row to attendance dataframe:", row)
 
     # Display the resulting image
     cv2.imshow('Video', frame)
 
     # Exit the program if the 'q' key is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
+        
         break
 
 # Save the attendance dataframe to an Excel file
