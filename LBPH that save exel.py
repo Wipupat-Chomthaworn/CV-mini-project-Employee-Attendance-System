@@ -105,11 +105,11 @@ while True:
 
     # Exit the program if the 'q' key is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        
         break
 
 # Save the attendance dataframe to an Excel file
 df.to_excel(filename, index=False)
+print("saving complete", filename)
 
 video_capture.release()
 cv2.destroyAllWindows()
