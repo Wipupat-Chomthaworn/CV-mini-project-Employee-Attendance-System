@@ -5,8 +5,12 @@ import pandas as pd
 from datetime import datetime
 import tkinter as tk
 from PIL import Image, ImageTk
+
+
 global df
 log_text = ''
+recorded_faces = {}
+
 cap = cv2.VideoCapture(0)
 # Load the known faces from the 'KnownFaces' folder
 known_faces_dir = 'KnownFaces'
@@ -81,18 +85,19 @@ def update_feed():
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
             # Add the name and current timestamp to the attendance dataframe
-            if name != 'Unknown':
+            if name != 'Unknown' and name not in recorded_faces:
                 now = datetime.now()
                 date = now.strftime('%Y-%m-%d')
                 timestamp = now.strftime('%H:%M:%S')
                 global df, log_text
-
+                
                 row = {'Name': name, 'Date': date, 'Timestamp': timestamp}
                 update_text(name, date, timestamp, log_text)
-                df = pd.concat(
-                    [df, pd.DataFrame(row, index=[0])], ignore_index=True)
+                df = pd.concat([df, pd.DataFrame(row, index=[0])], ignore_index=True)
                 print("Added row to attendance dataframe:", row)
 
+                # Add name to recorded_faces dictionary
+                recorded_faces[name] = True
 
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
             image = Image.fromarray(frame)
@@ -109,16 +114,16 @@ def update_feed():
 
 def update_text(name, date, time, log):
     name = name.split("-")
-    text = "Name : " + name[0] + " \n Employee : " + name[-1] + '\n Time : ' + date + time + '\n'
-    text_name.configure(text=text)
+    textName = "Name : " + name[0] + "\nEmployee id : " + name[-1] + '\nTime : ' + time + '\n'
+    textLog = date + ": " + name[0] + '-' + name[-1] + ' Time : ' + time + '\n'
+    text_name.configure(text=textName, justify="left")
     global log_text
-    old = log_text.split("Name : ")
     # if (name == old[-1] or log_text == ""):
         # log_text = log + text
         # text_log.configure(text=log_text)
     # else:
-    log_text = log + text
-    text_log.configure(text=log_text)
+    log_text = log + textLog
+    text_log.configure(text=log_text, justify="left")
 
 
 
@@ -149,7 +154,9 @@ update_feed()
 # Start the GUI event loop
 window.mainloop()
 
+
 # Release the video capture device
 cap.release()
+cv2.destroyAllWindows()
 
 
