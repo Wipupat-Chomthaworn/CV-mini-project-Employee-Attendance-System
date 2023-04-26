@@ -134,7 +134,7 @@ def update_feed():
             image_label.image = image_tk
 
         # Schedule the next update
-        image_label.after(1, update_feed)
+        image_label.after(10, update_feed)
 
         # Display the GUI window
         window.update()
