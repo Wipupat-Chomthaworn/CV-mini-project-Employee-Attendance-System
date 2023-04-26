@@ -118,6 +118,16 @@ def update_feed():
                 # Add name to recorded_faces dictionary
                 recorded_faces[name] = True
 
+                # Save attendance dataframe to Excel file with a new sheet name
+                with pd.ExcelWriter(filename, mode='a') as writer:
+                    sheet_num = 1
+                    sheet_name_new = sheet_name
+                    while sheet_name_new in writer.book.sheetnames:
+                        sheet_name_new = sheet_name + str(sheet_num)
+                        sheet_num += 1
+                    df.to_excel(writer, sheet_name=sheet_name_new, index=False)
+                    print("Attendance saved to Excel file.")
+
             image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
             image_tk = ImageTk.PhotoImage(image)
             image_label.config(image=image_tk)
