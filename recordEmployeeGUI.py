@@ -6,12 +6,32 @@ from datetime import datetime
 import tkinter as tk
 from PIL import Image, ImageTk
 
+# Create the GUI window
+window = tk.Tk()
+window.title("Employee Attendance System")
+
+# Open the video capture device
+cap = cv2.VideoCapture(0)
+
+# Create the label to display the video feed
+image_label = tk.Label(window)
+image_label.grid(row=0, column=0)
+
+# Create the label to display the text
+text_display = tk.Label(window, text='Employee Attendance System', font=('Arial', 16))
+text_display.grid(row=0, column=1, sticky='n')
+
+text_name = tk.Label(window, text="Name : ", font=('Arial', 16))
+text_name.grid(row=0, column=1)
+
+text_log = tk.Label(window, text="", font=('Arial', 16))
+text_log.grid(row=1, column=0)
+
 
 global df
 log_text = ''
 recorded_faces = {}
 
-cap = cv2.VideoCapture(0)
 # Load the known faces from the 'KnownFaces' folder
 known_faces_dir = 'KnownFaces'
 known_face_names = []
@@ -55,7 +75,6 @@ else:
     print("created xlsx")
 
 def update_feed():
-    while True:
         # Capture a single frame from the camera
         ret, frame = cap.read()
 
@@ -99,17 +118,15 @@ def update_feed():
                 # Add name to recorded_faces dictionary
                 recorded_faces[name] = True
 
-            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-            image = Image.fromarray(frame)
+            image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
             image_tk = ImageTk.PhotoImage(image)
-            image_label.configure(image=image_tk)
+            image_label.config(image=image_tk)
             image_label.image = image_tk
 
-            # Schedule the next update
-            image_label.after(10, update_feed)
+        # Schedule the next update
+        image_label.after(10, update_feed)
 
         # Display the GUI window
-        window.update_idletasks()
         window.update()
 
 def update_text(name, date, time, log):
@@ -125,28 +142,6 @@ def update_text(name, date, time, log):
     log_text = log + textLog
     text_log.configure(text=log_text, justify="left")
 
-
-
-# Create the GUI window
-window = tk.Tk()
-window.title("Employee Attendance System")
-
-# Create the label to display the video feed
-image_label = tk.Label(window)
-image_label.grid(row=0, column=0)
-
-# Create the label to display the text
-text_display = tk.Label(window, text='Employee Attendance System', font=('Arial', 16))
-text_display.grid(row=0, column=1, sticky='n')
-
-text_name = tk.Label(window, text="Name : ", font=('Arial', 16))
-text_name.grid(row=0, column=1)
-
-text_log = tk.Label(window, text="", font=('Arial', 16))
-text_log.grid(row=1, column=0)
-
-# Open the video capture device
-cap = cv2.VideoCapture(0)
 
 # Start the video feed update loop
 update_feed()
