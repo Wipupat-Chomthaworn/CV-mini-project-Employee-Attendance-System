@@ -128,13 +128,14 @@ def update_feed():
                     df.to_excel(writer, sheet_name=sheet_name_new, index=False)
                     print("Attendance saved to Excel file.")
 
-            image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-            image_tk = ImageTk.PhotoImage(image)
-            image_label.config(image=image_tk)
-            image_label.image = image_tk
+
+        image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+        image_tk = ImageTk.PhotoImage(image)
+        image_label.config(image=image_tk)
+        image_label.image = image_tk
 
         # Schedule the next update
-        image_label.after(1, update_feed)
+        image_label.after(10, update_feed)
 
         # Display the GUI window
         window.update()
@@ -158,7 +159,6 @@ update_feed()
 
 # Start the GUI event loop
 window.mainloop()
-
 
 # Release the video capture device
 cap.release()
