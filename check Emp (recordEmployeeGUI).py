@@ -60,6 +60,9 @@ for i, images in enumerate(known_face_images):
         faces.append(img)
         labels.append(i)
 face_recognizer.train(faces, np.array(labels))
+# face_recognizer.save("models/face_recognizer.yml")
+# face_recognizer.read("models/face_recognizer.yml")
+
 
 # Load the attendance Excel file or create a new one if it doesn't exist
 filename = 'Attendance.xlsx'
