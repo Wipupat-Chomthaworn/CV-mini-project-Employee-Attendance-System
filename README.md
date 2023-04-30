@@ -7,4 +7,4 @@ to use : pip install -r requirements.txt <br>
 to save what is in pip install : pip freeze > requirements.txt
 
 ## Demo
-[![Demo video](https://img.youtube.com/vi/uCxbLzjeFDM/0.jpg)](https://www.youtube.com/watch?v=uCxbLzjeFDM)
+[![Demo video](https://github.com/Wipupat-Chomthaworn/CV-mini-project-Employee-Attendance-System/blob/main/7k05qt.gif)](https://www.youtube.com/watch?v=uCxbLzjeFDM)
