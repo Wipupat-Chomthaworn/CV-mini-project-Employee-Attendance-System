@@ -8,3 +8,4 @@ to save what is in pip install : pip freeze > requirements.txt
 
 ## Demo
 [![Demo video](https://github.com/Wipupat-Chomthaworn/CV-mini-project-Employee-Attendance-System/blob/main/7k05qt.gif)](https://www.youtube.com/watch?v=uCxbLzjeFDM)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/uCxbLzjeFDM?si=WhHFUVoOTnLj2jsq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
